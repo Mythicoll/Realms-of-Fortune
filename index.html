@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realms of Fortune</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-biome="vault">
+  <div class="app">
+    <!-- Header -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">◆</span>
+        <div class="brand-text">
+          <h1>Realms of Fortune</h1>
+          <p class="tagline">Roulette, Reimagined</p>
+        </div>
+      </div>
+      <div class="wallet">
+        <div class="wallet-item">
+          <span class="wallet-label">Balance</span>
+          <span class="wallet-value">$<span id="balance">5000</span></span>
+        </div>
+        <div class="wallet-item">
+          <span class="wallet-label">Total Bet</span>
+          <span class="wallet-value">$<span id="totalBet">0</span></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Biome banner -->
+    <div class="biome-banner" id="biomeBanner">
+      <span class="biome-icon" id="biomeIcon">🏦</span>
+      <div class="biome-info">
+        <span class="biome-name" id="biomeName">The Vault</span>
+        <span class="biome-desc" id="biomeDesc">Standard play. The realm is dormant... for now.</span>
+      </div>
+      <div class="biome-status">
+        <span class="biome-rounds" id="biomeRounds"></span>
+        <div class="meter" id="volcanoMeter" hidden>
+          <span class="meter-label">🌋 Volcano</span>
+          <div class="meter-bar"><div class="meter-fill" id="volcanoFill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Three-column layout: rules | game | rules -->
+    <main class="layout">
+      <!-- LEFT: standard payouts -->
+      <aside class="side-rules">
+        <div class="rules-col">
+          <h3>Standard Payouts</h3>
+          <ul class="odds-list">
+            <li><span>Straight Up (single number)</span><b>35 : 1</b></li>
+            <li><span>Red / Black</span><b>1 : 1</b></li>
+            <li><span>Even / Odd</span><b>1 : 1</b></li>
+            <li><span>1–18 / 19–36</span><b>1 : 1</b></li>
+          </ul>
+        </div>
+        <div class="rules-col how-to">
+          <h3>How To Play</h3>
+          <ol class="how-list">
+            <li>Pick a chip, click numbers or outside bets.</li>
+            <li>Hit <b>SPIN</b>. Every spin can awaken a Realm.</li>
+            <li>Realms add fixed bonus payouts on marked numbers.</li>
+          </ol>
+        </div>
+      </aside>
+
+      <!-- CENTER: wheel + board -->
+      <section class="game-center">
+        <div class="wheel-panel">
+          <div class="players" id="players"></div>
+          <div class="wheel-wrap">
+            <div class="wheel" id="wheel"></div>
+            <div class="wheel-numbers" id="wheelNumbers"></div>
+            <div class="wheel-ball" id="ball"></div>
+            <div class="wheel-center"><span id="resultNumber">—</span></div>
+            <div class="wheel-pointer"></div>
+          </div>
+          <div class="history" id="history"></div>
+        </div>
+
+        <div class="bet-panel">
+          <div class="chip-tray" id="chipTray"></div>
+          <div class="board" id="board"></div>
+          <div class="controls">
+            <button class="btn btn-ghost" id="clearBtn">Clear Bets</button>
+            <button class="btn btn-spin" id="spinBtn">SPIN</button>
+          </div>
+          <div class="readout" id="readout">Place a bet and spin. Watch for a World Event.</div>
+        </div>
+      </section>
+
+      <!-- RIGHT: realm bonuses + demo controls -->
+      <aside class="side-rules">
+        <div class="rules-col">
+          <h3>Realm Bonuses</h3>
+          <ul class="odds-list biome-rules">
+            <li><span>🌲 <b>Verdant Forest</b><br/>Hit a green number</span><b>50 : 1</b></li>
+            <li><span>🌋 <b>Volcanic Ridge</b><br/>Red hits fill the meter; the burst number</span><b>100 : 1</b></li>
+            <li><span>👑 <b>Golden Hall</b><br/>Hit the gold number of the spin</span><b>70 : 1</b></li>
+            <li><span>❄️ <b>Frost Field</b><br/>2 numbers freeze out & cannot land</span><b>—</b></li>
+          </ul>
+          <div class="active-bonus">
+            <span class="ab-label">Active Realm Bonus</span>
+            <span class="ab-value" id="bonusOdds">No realm active — standard payouts only.</span>
+          </div>
+        </div>
+
+        <div class="rules-col demo-triggers">
+          <h3>Demo Controls</h3>
+          <button class="btn-auto" id="autoBtn">▶ Auto-Demo</button>
+          <span class="demo-label">Force a Realm (100% bonus)</span>
+          <div class="trigger-row">
+            <button class="btn-trigger t-forest" data-biome="forest">🌲 Forest</button>
+            <button class="btn-trigger t-volcano" data-biome="volcano">🌋 Ridge</button>
+            <button class="btn-trigger t-golden" data-biome="golden">👑 Hall</button>
+            <button class="btn-trigger t-frost" data-biome="frost">❄️ Field</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Full-screen flash -->
+  <div class="screen-flash" id="screenFlash" aria-hidden="true"></div>
+
+  <!-- World Event overlay -->
+  <div class="world-event" id="worldEvent" aria-hidden="true">
+    <div class="we-rays"></div>
+    <div class="world-event-inner">
+      <span class="we-tag">✦ WORLD EVENT ✦</span>
+      <span class="we-icon" id="weIcon">🌲</span>
+      <span class="we-title" id="weTitle">Verdant Forest</span>
+      <span class="we-sub" id="weSub">The realm transforms...</span>
+      <span class="we-rules" id="weRules"></span>
+    </div>
+  </div>
+
+  <!-- Bonus hit popup -->
+  <div class="bonus-pop" id="bonusPop" aria-hidden="true">
+    <span class="bonus-pop-icon" id="bonusPopIcon">🌋</span>
+    <div class="bonus-pop-text" id="bonusPopText"></div>
+  </div>
+
+  <!-- Volcano eruption overlay -->
+  <div class="eruption" id="eruption" aria-hidden="true">
+    <div class="eruption-glow"></div>
+    <div class="lava" id="lavaField"></div>
+    <div class="eruption-inner">
+      <span class="eruption-volcano">🌋</span>
+      <span class="eruption-title">ERUPTION!</span>
+      <span class="eruption-sub" id="eruptionSub">The mountain blows — 100 : 1</span>
+    </div>
+  </div>
+
+  <script src="biomes.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
